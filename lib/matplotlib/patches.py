@@ -4093,8 +4093,16 @@ default: 'arc3'
             the mutation and the mutated box will be stretched by the inverse
             of it.
 
+        color : The color of the associated vector
+
         Other Parameters
         ----------------
+        start : start position of the associated vector
+
+        end : end position of the associated vector
+
+        delta : delta of the associated vector
+
         **kwargs : `.Patch` properties, optional
             Here is a list of available `.Patch` properties:
 
@@ -4107,6 +4115,7 @@ default: 'arc3'
         kwargs.setdefault("joinstyle", JoinStyle.round)
         kwargs.setdefault("capstyle", CapStyle.round)
 
+        # Update the start, end, delta positions of the associated Vector, if any
         start = kwargs.pop("start", None)
         end = kwargs.pop("end", None)
         delta = kwargs.pop("delta", None)
@@ -4336,21 +4345,45 @@ default: 'arc3'
         return _path, fillable
 
     def set_start(self, start):
+        """
+        Set the vector start position.
+
+        Parameters
+        ----------
+        aspect : float
+        """
         self.start = start
 
     def get_start(self):
+        """Return the start of the vector."""
         return self.start
 
     def set_end(self, end):
+        """
+        Set the vector end position.
+
+        Parameters
+        ----------
+        aspect : float
+        """
         self.end = end
 
     def get_end(self):
+        """Return the end of the vector"""
         return self.end
 
     def set_delta(self, delta):
+        """
+        Set the delta of the vector.
+
+        Parameters
+        ----------
+        aspect : float
+        """
         self.delta = delta
 
     def get_delta(self):
+        """Return the delta of the vector."""
         return self.delta
 
     def draw(self, renderer):
