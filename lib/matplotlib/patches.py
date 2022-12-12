@@ -4025,11 +4025,19 @@ class FancyArrowPatch(Patch):
 
     @_docstring.dedent_interpd
     @_api.make_keyword_only("3.6", name="path")
-    def __init__(self, posA=None, posB=None, path=None,
-                 arrowstyle="simple", connectionstyle="arc3",
-                 patchA=None, patchB=None,
-                 shrinkA=2, shrinkB=2,
-                 mutation_scale=1, mutation_aspect=1,
+    def __init__(self,
+                 posA=None,
+                 posB=None,
+                 path=None,
+                 arrowstyle="simple",
+                 connectionstyle="arc3",
+                 color=None,
+                 patchA=None,
+                 patchB=None,
+                 shrinkA=2,
+                 shrinkB=2,
+                 mutation_scale=1,
+                 mutation_aspect=1,
                  **kwargs):
         """
         There are two ways for defining an arrow:
@@ -4098,6 +4106,10 @@ default: 'arc3'
         # Traditionally, the cap- and joinstyle for FancyArrowPatch are round
         kwargs.setdefault("joinstyle", JoinStyle.round)
         kwargs.setdefault("capstyle", CapStyle.round)
+
+        start = kwargs.pop("start", None)
+        end = kwargs.pop("end", None)
+        delta = kwargs.pop("delta", None)
 
         super().__init__(**kwargs)
 
@@ -4322,6 +4334,24 @@ default: 'arc3'
             self.get_mutation_aspect())
 
         return _path, fillable
+
+    def set_start(self, start):
+        self.start = start
+
+    def get_start(self):
+        return self.start
+
+    def set_end(self, end):
+        self.end = end
+
+    def get_end(self):
+        return self.end
+
+    def set_delta(self, delta):
+        self.delta = delta
+
+    def get_delta(self):
+        return self.delta
 
     def draw(self, renderer):
         if not self.get_visible():
