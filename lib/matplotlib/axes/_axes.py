@@ -5117,6 +5117,11 @@ default: :rc:`scatter.edgecolors`
         """
         # Strip away units for the underlying patch since units
         # do not make sense to most patch-like code
+        _api.warn_deprecated(
+            "3.6", message="Arrow(x,y,dx,dy) is deprecated since "
+            "%(since)s; support will be removed %(removal)s.  Use "
+            "Vector(x,y,dx,dy) to construct a vector from point (x, y) "
+            "to point (x + dx, y + dy).")
         x = self.convert_xunits(x)
         y = self.convert_yunits(y)
         dx = self.convert_xunits(dx)
