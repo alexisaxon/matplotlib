@@ -4115,7 +4115,7 @@ default: 'arc3'
         kwargs.setdefault("joinstyle", JoinStyle.round)
         kwargs.setdefault("capstyle", CapStyle.round)
 
-        # Update the start, end, delta positions of the associated Vector, if any
+        # Update start, end, delta positions of the associated Vector, if any
         start = kwargs.pop("start", None)
         end = kwargs.pop("end", None)
         delta = kwargs.pop("delta", None)
