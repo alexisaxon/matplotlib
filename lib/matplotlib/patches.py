@@ -9,6 +9,7 @@ from numbers import Number
 import textwrap
 from types import SimpleNamespace
 from collections import namedtuple
+from matplotlib.transforms import Affine2D
 
 import numpy as np
 
@@ -2337,7 +2338,35 @@ class BoxStyle(_Style):
             # boundary of the padded box
             x0, y0 = x0 - pad, y0 - pad
             return Path.circle((x0 + width / 2, y0 + height / 2),
-                               max(width, height) / 2)
+                                max(width, height) / 2)
+
+    @_register_style(_style_list)
+    class Ellipse:
+        """
+        An elliptical box.
+
+        .. versionadded:: 3.7
+        """
+
+        def __init__(self, pad=0.3):
+            """
+            Parameters
+            ----------
+            pad : float, default: 0.3
+                The amount of padding around the original box.
+            """
+            self.pad = pad
+
+        def __call__(self, x0, y0, width, height, mutation_size):
+            pad = mutation_size * self.pad
+            width, height = width + 2 * pad, height + 2 * pad
+            # boundary of the padded box
+            x0, y0 = x0 - pad, y0 - pad
+            a = width / math.sqrt(2)
+            b = height / math.sqrt(2)
+            trans = Affine2D().scale(a, b).translate(x0 + width / 2,
+                                                     y0 + height / 2)
+            return trans.transform_path(Path.unit_circle())
 
     @_register_style(_style_list)
     class LArrow:
@@ -4025,11 +4054,19 @@ class FancyArrowPatch(Patch):
 
     @_docstring.dedent_interpd
     @_api.make_keyword_only("3.6", name="path")
-    def __init__(self, posA=None, posB=None, path=None,
-                 arrowstyle="simple", connectionstyle="arc3",
-                 patchA=None, patchB=None,
-                 shrinkA=2, shrinkB=2,
-                 mutation_scale=1, mutation_aspect=1,
+    def __init__(self,
+                 posA=None,
+                 posB=None,
+                 path=None,
+                 arrowstyle="simple",
+                 connectionstyle="arc3",
+                 color=None,
+                 patchA=None,
+                 patchB=None,
+                 shrinkA=2,
+                 shrinkB=2,
+                 mutation_scale=1,
+                 mutation_aspect=1,
                  **kwargs):
         """
         There are two ways for defining an arrow:
@@ -4085,8 +4122,16 @@ default: 'arc3'
             the mutation and the mutated box will be stretched by the inverse
             of it.
 
+        color : The color of the associated vector
+
         Other Parameters
         ----------------
+        start : start position of the associated vector
+
+        end : end position of the associated vector
+
+        delta : delta of the associated vector
+
         **kwargs : `.Patch` properties, optional
             Here is a list of available `.Patch` properties:
 
@@ -4098,6 +4143,11 @@ default: 'arc3'
         # Traditionally, the cap- and joinstyle for FancyArrowPatch are round
         kwargs.setdefault("joinstyle", JoinStyle.round)
         kwargs.setdefault("capstyle", CapStyle.round)
+
+        # Update start, end, delta positions of the associated Vector, if any
+        start = kwargs.pop("start", None)
+        end = kwargs.pop("end", None)
+        delta = kwargs.pop("delta", None)
 
         super().__init__(**kwargs)
 
@@ -4322,6 +4372,48 @@ default: 'arc3'
             self.get_mutation_aspect())
 
         return _path, fillable
+
+    def set_start(self, start):
+        """
+        Set the vector start position.
+
+        Parameters
+        ----------
+        aspect : float
+        """
+        self.start = start
+
+    def get_start(self):
+        """Return the start of the vector."""
+        return self.start
+
+    def set_end(self, end):
+        """
+        Set the vector end position.
+
+        Parameters
+        ----------
+        aspect : float
+        """
+        self.end = end
+
+    def get_end(self):
+        """Return the end of the vector"""
+        return self.end
+
+    def set_delta(self, delta):
+        """
+        Set the delta of the vector.
+
+        Parameters
+        ----------
+        aspect : float
+        """
+        self.delta = delta
+
+    def get_delta(self):
+        """Return the delta of the vector."""
+        return self.delta
 
     def draw(self, renderer):
         if not self.get_visible():
