@@ -5149,7 +5149,8 @@ default: :rc:`scatter.edgecolors`
         color = kwargs.pop("color", None)
         if not color:
             color = self._get_lines.get_next_color()
-        vector = mpatches.FancyArrowPatch((x, y), (x + dx, y + dy), color=color, **kwargs)
+        vector = mpatches.FancyArrowPatch((x, y), (x + dx, y + dy), color=color,
+                                          **kwargs)
         ms = vector._mutation_scale
         style_kwargs = {
             "head_length": kwargs.get("head_length", 12) / ms,
@@ -5157,12 +5158,12 @@ default: :rc:`scatter.edgecolors`
             "tail_width": kwargs.get("tail_width", 4) / ms,
         }
 
-        vector.set_arrowstyle(kwargs.get("arrowstyle", "simple"), **style_kwargs)
+        vector.set_arrowstyle(kwargs.get("arrowstyle", "simple"), 
+                              **style_kwargs)
         self.add_patch(vector)
         self.update_datalim([(x, y), (x + dx, y + dy)])
         self._request_autoscale_view()
         return vector
-
 
     @_docstring.copy(mquiver.QuiverKey.__init__)
     def quiverkey(self, Q, X, Y, U, label, **kwargs):
